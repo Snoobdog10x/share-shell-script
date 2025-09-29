@@ -24,6 +24,13 @@ git clone -b "$REPOSITORY_BRANCH" -n "$REPOSITORY" --depth 1 .
 # Checkout only the specific file
 git checkout HEAD -- "$REMOTE_PATH"
 
+if [[ ! -e "$REMOTE_PATH" ]]; then
+  echo "❌ Source file not found: $REMOTE_PATH, please check the version"
+  # cleanup if needed
+  cd "$CURRENT_DIR" && rm -rf "$TMP_DIR"
+  exit 1
+fi
+
 # Move the file to the destination
 mkdir -p "$(dirname "$LOCAL_PATH")"
 mv "$REMOTE_PATH" "$LOCAL_PATH"

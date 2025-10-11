@@ -7,41 +7,18 @@ if [ "$#" -eq 1 ]; then
 fi
 
 # Config
-REPOSITORY="git@git.moon-dev.com:alphalogy-app/alphalogy-cli.git"
-REMOTE_PATH="executable/alp"
-LOCAL_PATH="$HOME/.alp/alp"
+REPOSITORY="git@git.moon-dev.com:alphalogy/alphalogy-cli-releases.git"
+LOCAL_DIR="$HOME/.alp"
 
-# Save current directory
-CURRENT_DIR="$(pwd)"
-
-# Create temporary directory
-TMP_DIR=$(mktemp -d -t singlefile-XXXXXXXXXX)
-cd "$TMP_DIR" || exit 1
+echo "ℹ️ Install Alp Cli"
+#Make .alp dir and clone release
+mkdir "$LOCAL_DIR"
+cd "$LOCAL_DIR" || exit 1
 
 # Clone repo shallowly, no checkout
-git clone -b "$REPOSITORY_BRANCH" -n "$REPOSITORY" --depth 1 .
+git clone -b "$REPOSITORY_BRANCH" "$REPOSITORY" .
 
-# Checkout only the specific file
-git checkout HEAD -- "$REMOTE_PATH"
-
-if [[ ! -e "$REMOTE_PATH" ]]; then
-  echo "❌ Source file not found: $REMOTE_PATH, please check the version"
-  # cleanup if needed
-  cd "$CURRENT_DIR" && rm -rf "$TMP_DIR"
-  exit 1
-fi
-
-# Move the file to the destination
-mkdir -p "$(dirname "$LOCAL_PATH")"
-mv "$REMOTE_PATH" "$LOCAL_PATH"
-
-# Cleanup
-cd "$CURRENT_DIR" && rm -rf "$TMP_DIR"
-
-# Make executable
-chmod +x "$LOCAL_PATH"
-echo "✅ File '$REMOTE_PATH' has been saved to '$LOCAL_PATH' and made executable."
-
+chmod +x "./alp"
 # Ensure ~/.alp is in PATH via .zshrc
 if ! grep -q "export PATH=\"$HOME/.alp:\$PATH\"" "$HOME/.zshrc"; then
     echo "export PATH=\"$HOME/.alp:\$PATH\"" >> "$HOME/.zshrc"

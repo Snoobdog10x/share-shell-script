@@ -23,8 +23,6 @@ mkdir -p "$LOCAL_DIR"
 cd "$LOCAL_DIR" || exit 1
 
 git clone -b "$REPOSITORY_BRANCH" "$REPOSITORY" --depth 1 .
-rm -rf .git
-
 chmod +x "$ALP_PATH"
 
 # --- Step 3: Ensure ~/.alp in PATH ---
